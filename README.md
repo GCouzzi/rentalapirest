@@ -5,6 +5,7 @@ Esta é uma API REST construída com **Spring Boot** para um sistema de aluguel 
 ## Tecnologias e Suas Utilizações no Projeto
 
 - **Spring Boot**: Usado como framework principal para a criação da API REST.
+- **Spring WebFlux com WebTestClient**: Utilizado para realizar testes de integração da API, permitindo verificar o comportamento dos endpoints, validar os dados retornados e testar a segurança, como a autenticação via JWT.
 - **Spring Data JPA**: Utilizado para abstrair o acesso ao banco de dados **MySQL** e realizar auditoria, registrando alterações nas entidades de domínio, como criação e modificação de registros.
 - **Spring HATEOAS**: Implementado para adicionar links em respostas de endpoints, seguindo o conceito de HATEOAS.
 - **MySQL**: Utilizado como o banco de dados relacional principal da aplicação.
