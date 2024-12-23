@@ -6,6 +6,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.math.BigDecimal;
 import java.util.Objects;
 
 @Getter @Setter @NoArgsConstructor @AllArgsConstructor
@@ -25,9 +26,11 @@ public class Automovel {
 	private String cor;
 	@Column(name = "placa", nullable = false, unique = true)
 	private String placa;
+	@Column(name = "valor_por_minuto", columnDefinition = "decimal(8,2)")
+	private BigDecimal valorPorMinuto;
 	@Column(name = "status", nullable = false)
+	@Enumerated(EnumType.STRING)
 	private Status status = Status.LIVRE;
-	
 	public enum Status{
 		LIVRE, ALUGADO
 	}

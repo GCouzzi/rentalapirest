@@ -7,6 +7,8 @@ import com.gsalles.carrental.exception.UsernameUniqueViolationException;
 import com.gsalles.carrental.repository.UsuarioRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -50,8 +52,8 @@ public class UsuarioService {
 	}
 
 	@Transactional(readOnly = true)
-	public List<Usuario> buscarTodos() {
-		return repository.findAll();
+	public Page<Usuario> buscarTodos(Pageable pageable) {
+		return repository.findAll(pageable);
 	}
 
 	@Transactional(readOnly = true)

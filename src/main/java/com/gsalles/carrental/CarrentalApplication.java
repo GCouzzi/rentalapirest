@@ -7,6 +7,8 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 public class CarrentalApplication {
 
 	public static void main(String[] args) {
+		SpringApplication app = new SpringApplication(CarrentalApplication.class);
+		app.setAdditionalProfiles("prod");
 		SpringApplication.run(CarrentalApplication.class, args);
 	}
 

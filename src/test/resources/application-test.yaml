@@ -1,0 +1,20 @@
+spring:
+  web:
+    locale-resolver: fixed
+    locale: pt_BR
+  jpa:
+    database: POSTGRESQL
+    show-sql: true
+    hibernate:
+      format_sql: false
+      ddl-auto: update
+  datasource:
+    platform: postgres
+    driverClassName: org.postgresql.Driver
+    url: jdbc:postgresql://localhost:5432/apptest
+    username: postgres
+    password: postgres
+
+springdoc:
+  swagger-ui.path: /swagger-ui.html
+  packagesToScan: com.gsalles.carrental.controller

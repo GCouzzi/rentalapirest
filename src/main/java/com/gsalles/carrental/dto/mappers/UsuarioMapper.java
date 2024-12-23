@@ -11,6 +11,7 @@ import org.modelmapper.PropertyMap;
 import com.gsalles.carrental.dto.UsuarioDTO;
 import com.gsalles.carrental.entity.Usuario;
 import com.gsalles.carrental.dto.rdto.UsuarioResponseDTO;
+import org.springframework.data.domain.Page;
 
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class UsuarioMapper {
@@ -32,7 +33,7 @@ public class UsuarioMapper {
 		return mapper.map(usuario, UsuarioResponseDTO.class);
 	}
 	
-	public static List<UsuarioResponseDTO> toListDto(List<Usuario> list){
-		return list.stream().map(user -> toDto(user)).collect(Collectors.toList());
+	public static Page<UsuarioResponseDTO> toListDto(Page<Usuario> list){
+		return list.map(UsuarioMapper::toDto);
 	}
 }

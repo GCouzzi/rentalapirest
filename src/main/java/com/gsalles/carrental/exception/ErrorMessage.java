@@ -1,20 +1,20 @@
 package com.gsalles.carrental.exception;
 
-import java.util.HashMap;
-import java.util.Map;
-
+import com.fasterxml.jackson.annotation.JsonInclude;
+import jakarta.servlet.http.HttpServletRequest;
+import lombok.*;
 import org.springframework.http.HttpStatus;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 
-import com.fasterxml.jackson.annotation.JsonInclude;
-
-import jakarta.servlet.http.HttpServletRequest;
-import lombok.Getter;
-import lombok.Setter;
+import java.util.HashMap;
+import java.util.Map;
 
 @Getter
+@ToString
 @Setter
+@NoArgsConstructor
+@AllArgsConstructor
 public class ErrorMessage {
 
 	private String path;

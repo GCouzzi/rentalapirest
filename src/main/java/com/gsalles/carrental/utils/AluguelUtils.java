@@ -20,10 +20,10 @@ public class AluguelUtils {
                 .replace("-", "");
     }
 
-    public static BigDecimal calcularValor(LocalDateTime dataInicio, LocalDateTime dataFim) {
+    public static BigDecimal calcularValor(LocalDateTime dataInicio, LocalDateTime dataFim, BigDecimal valorPorMinuto) {
         long minutes = dataInicio.until(dataFim, ChronoUnit.MINUTES);
-        double total = minutes * 0.45;
-        return new BigDecimal(total).setScale(2, RoundingMode.HALF_EVEN);
+        BigDecimal total = valorPorMinuto.multiply(BigDecimal.valueOf(minutes));
+        return total.setScale(2, RoundingMode.HALF_EVEN);
     }
 
     public static BigDecimal calcularDesconto(BigDecimal valor, long totalVezes) {

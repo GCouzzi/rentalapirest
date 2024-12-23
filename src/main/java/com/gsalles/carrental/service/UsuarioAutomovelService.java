@@ -3,7 +3,10 @@ package com.gsalles.carrental.service;
 import com.gsalles.carrental.entity.UsuarioAutomovel;
 import com.gsalles.carrental.exception.EntityNotFoundException;
 import com.gsalles.carrental.repository.UsuarioAutomovelRepository;
+import com.gsalles.carrental.repository.UsuarioRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -13,7 +16,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class UsuarioAutomovelService {
     private final UsuarioAutomovelRepository repository;
-
+    private final UsuarioService uService;
     @Transactional
     public UsuarioAutomovel salvar(UsuarioAutomovel ua){
         return repository.save(ua);
@@ -32,7 +35,8 @@ public class UsuarioAutomovelService {
     }
 
     @Transactional
-    public List<UsuarioAutomovel> buscarTodosAlugueisPorUsername(String username){
-        return repository.findAllByUsuarioUsername(username);
+    public Page<UsuarioAutomovel> buscarTodosAlugueisPorUsername(String username, Pageable pageable){
+        uService.buscarPorUsername(username);
+        return repository.findAllByUsuarioUsername(username, pageable);
     }
 }

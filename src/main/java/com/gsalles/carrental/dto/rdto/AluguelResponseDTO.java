@@ -5,6 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.springframework.hateoas.RepresentationModel;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
@@ -13,7 +14,7 @@ import java.time.LocalDateTime;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class AluguelResponseDTO {
+public class AluguelResponseDTO extends RepresentationModel<AluguelResponseDTO> {
 
     private String usuarioUsername;
     private String automovelMarca;
@@ -21,9 +22,9 @@ public class AluguelResponseDTO {
     private String automovelCor;
     private String automovelPlaca;
     private String automovelRecibo;
-    @JsonFormat(pattern = "yyyy-MM-dd hh:mm:ss")
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime dataInicio;
-    @JsonFormat(pattern = "yyyy-MM-dd hh:mm:ss")
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime dataFim;
     private BigDecimal valor;
     private BigDecimal desconto;

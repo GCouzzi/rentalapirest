@@ -6,6 +6,7 @@ import com.gsalles.carrental.entity.UsuarioAutomovel;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 import org.modelmapper.ModelMapper;
+import org.springframework.data.domain.Page;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -21,7 +22,7 @@ public class AluguelMapper {
         return new ModelMapper().map(ua, AluguelResponseDTO.class);
     }
 
-    public static List<AluguelResponseDTO> toListDto(List<UsuarioAutomovel> list){
-        return list.stream().map(AluguelMapper::toDto).collect(Collectors.toList());
+    public static Page<AluguelResponseDTO> toListDto(Page<UsuarioAutomovel> list){
+        return list.map(AluguelMapper::toDto);
     }
 }

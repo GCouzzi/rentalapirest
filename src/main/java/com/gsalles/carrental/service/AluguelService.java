@@ -40,10 +40,13 @@ public class AluguelService {
     @Transactional
     public UsuarioAutomovel checkout(String recibo){
         UsuarioAutomovel ua = uaService.buscarPorRecibo(recibo);
+        if(ua.getAutomovel().getStatus() != Automovel.Status.ALUGADO){
+            throw new AluguelAutomovelViolationException("Recibo já realizou checkout.");
+        }
         ua.setDataFim(LocalDateTime.now());
         ua.getAutomovel().setStatus(Automovel.Status.LIVRE);
         long totalVezes = uaService.buscarTotalDeAlugueis(ua.getUsuario().getUsername());
-        ua.setValor(AluguelUtils.calcularValor(ua.getDataInicio(), ua.getDataFim()));
+        ua.setValor(AluguelUtils.calcularValor(ua.getDataInicio(), ua.getDataFim(), ua.getAutomovel().getValorPorMinuto()));
         ua.setDesconto(AluguelUtils.calcularDesconto(ua.getValor(), totalVezes));
         return uaService.salvar(ua);
     }

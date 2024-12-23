@@ -1,0 +1,3 @@
+INSERT INTO automoveis (id, marca, modelo, cor, placa, valor_por_minuto, status) VALUES (10, 'Chevrolet', 'Tracker', 'Cinza', 'XXX-0000', 0.50, 'LIVRE');
+INSERT INTO automoveis (id, marca, modelo, cor, placa, valor_por_minuto, status) VALUES (20, 'Ford', 'Ka', 'Branco', 'XXX-0001', 0.20, 'LIVRE');
+INSERT INTO automoveis (id, marca, modelo, cor, placa, valor_por_minuto, status) VALUES (30, 'Honda', 'Accord', 'Preto', 'XXX-0002', 1, 'ALUGADO');

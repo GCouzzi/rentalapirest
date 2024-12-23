@@ -1,6 +1,8 @@
 package com.gsalles.carrental.repository;
 
 import com.gsalles.carrental.entity.UsuarioAutomovel;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
@@ -13,5 +15,5 @@ public interface UsuarioAutomovelRepository extends JpaRepository<UsuarioAutomov
 
     long countByUsuarioUsernameAndDataFimIsNotNull(String username);
 
-    List<UsuarioAutomovel> findAllByUsuarioUsername(String username);
+    Page<UsuarioAutomovel> findAllByUsuarioUsername(String username, Pageable pageable);
 }

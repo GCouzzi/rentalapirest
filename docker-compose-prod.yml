@@ -1,0 +1,39 @@
+services:
+  database:
+    image: mysql/mysql-server:latest
+    container_name: rentalapp_database
+    environment:
+      - MYSQL_DATABASE=car_rental
+      - MYSQL_USER=root
+      - MYSQL_PASSWORD=root
+      - MYSQL_ROOT_PASSWORD=root
+    ports:
+      - '3306:3306'
+    volumes:
+      - mysql-volume:/var/lib/mysql
+    networks:
+      - app-network
+
+  app:
+    image: rentalapp
+    container_name: rentalapp
+    ports:
+      - '8080:8080'
+    depends_on:
+      - database
+    networks:
+      - app-network
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:mysql://database:3306/car_rental?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=America/Sao_Paulo
+      SPRING_DATASOURCE_USERNAME: root
+      SPRING_DATASOURCE_PASSWORD: root
+      SPRING_PROFILES_ACTIVE: prod
+      MYSQL_HOST: database
+
+volumes:
+  mysql-volume:
+    driver: local
+
+networks:
+  app-network:
+    driver: bridge
