@@ -16,4 +16,5 @@ Esta é uma API REST construída com **Spring Boot** para um sistema de aluguel 
 - **Swagger / Springdoc OpenAPI**: Foi utilizado para gerar automaticamente a documentação interativa da API.
 - **ModelMapper**: Usado para mapear as entidades de domínio para **DTOs** (Data Transfer Objects).
 - **Lombok**: Usado para reduzir a quantidade de código.
+- **Content Negotiation**: A aplicação suporta os formatos **JSON** e **XML** na comunicação.
 - **Docker**: Foi utilizado para dockerizar a aplicação. Um `Dockerfile` foi criado para gerar uma imagem da aplicação, e um `docker-compose` foi configurado para executar a aplicação principal.
