@@ -60,7 +60,7 @@ Esse projeto é uma **API RESTful** desenvolvida para permitir o gerenciamento d
 │       │
 │       └── resources/
 │           ├── sql/                               # SQLs para adicionar e remover dados de teste.
-│           └── application-test.yaml          # Configurações específicas para ambiente de teste
+│           └── application-test.yaml              # Configurações específicas para ambiente de teste
 │
 ├── Dockerfile                        # Imagem Docker da aplicação
 ├── docker-compose-prod.yml           # Composição de serviços para produção
@@ -110,16 +110,16 @@ A aplicação inclui **testes de integração** usando **Spring WebFlux com WebT
 
 ## 💡 Boas Práticas Implementadas
 
-✔️ Arquitetura em camadas (Controller → Service → Repository)
-✔️ DTOs para separar modelo de domínio da API
-✔️ Validações de entrada com Spring Validation
-✔️ Autenticação JWT segura
-✔️ Respostas HATEOAS onde aplicável
-✔️ Documentação automática Swagger
-✔️ Containerização com Docker
-✔️ Testes integrados automatizados ([GitHub][1])
-✔️ Tratamento completo de exceções
-✔️ Buscas paginadas
+- Arquitetura em camadas (Controller → Service → Repository) ✔️ 
+- DTOs para separar modelo de domínio da API ✔️ 
+-  Validações de entrada com Spring Validation ✔️ 
+-  Autenticação JWT segura ✔️ 
+- Respostas HATEOAS onde aplicável ✔️ 
+-  Documentação automática Swagger ✔️ 
+-  Containerização com Docker ✔️ 
+-  Testes integrados automatizados ([GitHub][1]) ✔️ 
+- Tratamento completo de exceções ✔️ 
+- Buscas paginadas ✔️ 
 
 ---
 
