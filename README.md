@@ -1,12 +1,12 @@
 # 📌 API REST de Aluguel de Automóveis
 
-API REST construída com **Spring Boot** para gerenciamento de um sistema de aluguel de automóveis — incluindo usuários, automóveis e aluguéis. ([GitHub][1])
+API REST construída com **Spring Boot** para gerenciamento de um sistema de aluguel de automóveis — incluindo usuários, automóveis e aluguéis. 
 
 ---
 
 ## 🧠 Descrição do Projeto
 
-Esse projeto é uma **API RESTful** desenvolvida para permitir o gerenciamento de um sistema de aluguel de carros. A aplicação segue boas práticas de desenvolvimento de APIs, incluindo autenticação via JWT, estrutura em camadas, validação de entrada, testes automatizados e documentação interativa. ([GitHub][1])
+Esse projeto é uma **API RESTful** desenvolvida para permitir o gerenciamento de um sistema de aluguel de carros. A aplicação segue boas práticas de desenvolvimento de APIs, incluindo autenticação via JWT, estrutura em camadas, validação de entrada, testes automatizados e documentação interativa. 
 
 ---
 
@@ -74,7 +74,7 @@ Esse projeto é uma **API RESTful** desenvolvida para permitir o gerenciamento d
 
 O sistema utiliza **JWT (JSON Web Token)** para autenticação. Os usuários devem se autenticar via endpoint específico para receber um token de acesso, que deve ser enviado em todas as requisições protegidas no cabeçalho `Authorization: Bearer <token>`.
 
-A segurança é configurada usando **Spring Security**, que diferencia acessos por **roles/perfis (ex.: ADMIN, CLIENTE)** para proteger recursos específicos. ([GitHub][1])
+A segurança é configurada usando **Spring Security**, que diferencia acessos por **roles/perfis (ex.: ADMIN, CLIENTE)** para proteger recursos específicos. 
 
 
 ## 📄 Documentação Interativa
@@ -104,7 +104,7 @@ Essa interface permite visualizar todos os endpoints, parâmetros, modelos de da
 
 ## 🧪 Testes Automatizados
 
-A aplicação inclui **testes de integração** usando **Spring WebFlux com WebTestClient**, que validam os endpoints e garantem que a API está respondendo corretamente — incluindo respostas de sucesso, erros e segurança. ([GitHub][1])
+A aplicação inclui **testes de integração** usando **Spring WebFlux com WebTestClient**, que validam os endpoints e garantem que a API está respondendo corretamente — incluindo respostas de sucesso, erros e segurança. 
 
 ---
 
@@ -125,5 +125,5 @@ A aplicação inclui **testes de integração** usando **Spring WebFlux com WebT
 
 ## 🧑‍💻 Sobre o Autor
 
-Projeto desenvolvido com foco em aprendizado e aplicação de boas práticas de APIs REST com Spring Boot. ([GitHub][1])
+Projeto desenvolvido com foco em aprendizado e aplicação de boas práticas de APIs REST com Spring Boot. 
 
