@@ -81,7 +81,7 @@ public class UsuarioController {
 		return ResponseEntity.status(HttpStatus.CREATED).body(UsuarioMapper.toDto(usuario));
 	}
 	
-	@GetMapping(value = "/{id}", produces = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE})
+	@GetMapping(value = "/id/{id}", produces = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE})
 	@PreAuthorize("hasRole('ADMIN') or (hasRole('CLIENTE') AND #id == authentication.principal.id)")
 	@Operation(
 			summary = "Encontrar usuário por id",
@@ -109,7 +109,7 @@ public class UsuarioController {
 					@ApiResponse(description = "Usuário sem permissão", responseCode = "403")
 			}
 	)
-	public ResponseEntity<UsuarioResponseDTO> findById(@PathVariable Long id){
+	public ResponseEntity<UsuarioResponseDTO> findById(@PathVariable("id") Long id){
 		UsuarioResponseDTO r = UsuarioMapper.toDto(usuarioService.buscarPorId(id));
         if (SecurityContextHolder.getContext().getAuthentication()
                 .getAuthorities().stream()
@@ -123,40 +123,63 @@ public class UsuarioController {
 	}
 
     @Operation(
-            summary = "Buscar usuário por email ou CPF",
-            description = """
-                Retorna um usuário com base no email OU CPF informado.
-                
-                Regras:
-                - Apenas um dos parâmetros deve ser informado.
-                - Se ambos forem enviados → 400 Bad Request.
-                - Se nenhum for enviado → 400 Bad Request.
-                - Se não for encontrado → 404 Not Found.
-                """
+            summary = "Encontrar usuário por email",
+            description = "Operação para encontrar usuário por E-mail. Requer privilégios de ADMIN. Requer autenticação com bearer token.",
+            security = @SecurityRequirement(name = "security"),
+            tags = {"Usuarios"},
+            responses = {
+                    @ApiResponse(
+                            description = "Success",
+                            responseCode = "200",
+                            content = {
+                                    @Content(mediaType = "application/json", schema = @Schema(implementation = UsuarioResponseDTO.class)),
+                                    @Content(mediaType = "application/xml", schema = @Schema(implementation = UsuarioResponseDTO.class))
+                            }
+                    ),
+                    @ApiResponse(
+                            description = "Usuário não encontrado",
+                            responseCode = "404",
+                            content = @Content(schema = @Schema(implementation = EntityNotFoundException.class))
+                    ),
+                    @ApiResponse(description = "Usuário não está autenticado.", responseCode = "401"),
+                    @ApiResponse(description = "Usuário sem permissão (Requer ROLE_ADMIN)", responseCode = "403")
+            }
     )
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Usuário encontrado"),
-            @ApiResponse(responseCode = "400", description = "Parâmetros inválidos"),
-            @ApiResponse(responseCode = "403", description = "Acesso negado"),
-            @ApiResponse(responseCode = "401", description = "Usuário não está autenticado."),
-            @ApiResponse(responseCode = "404", description = "Usuário não encontrado")
-    })
-    @GetMapping
+    @GetMapping(value = "/email/{email}", produces = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE})
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<UsuarioResponseDTO> findByEmailAndOrCpf(@RequestParam(required = false) String email,
-                                                                  @RequestParam(required = false) String cpf){
-        if(email != null && cpf != null){
-            throw new IllegalArgumentException("Apenas um campo deve ser utilizado na busca.");
-        }
-        if (email == null && cpf == null) {
-            throw new IllegalArgumentException("Informe email ou cpf.");
-        }
-        if(email != null){
-            return ResponseEntity.ok(UsuarioMapper.toDto(usuarioService.findByEmail(email)));
-        }
+    public ResponseEntity<UsuarioResponseDTO> findByEmail(@PathVariable String email){
+        return ResponseEntity.ok(UsuarioMapper.toDto(usuarioService.findByEmail(email)));
+    }
 
+    @Operation(
+            summary = "Encontrar usuário por CPF",
+            description = "Operação para encontrar usuário por CPF. Requer privilégios de ADMIN. Requer autenticação com bearer token.",
+            security = @SecurityRequirement(name = "security"),
+            tags = {"Usuarios"},
+            responses = {
+                    @ApiResponse(
+                            description = "Success",
+                            responseCode = "200",
+                            content = {
+                                    @Content(mediaType = "application/json", schema = @Schema(implementation = UsuarioResponseDTO.class)),
+                                    @Content(mediaType = "application/xml", schema = @Schema(implementation = UsuarioResponseDTO.class))
+                            }
+                    ),
+                    @ApiResponse(
+                            description = "Usuário não encontrado",
+                            responseCode = "404",
+                            content = @Content(schema = @Schema(implementation = EntityNotFoundException.class))
+                    ),
+                    @ApiResponse(description = "Usuário não está autenticado.", responseCode = "401"),
+                    @ApiResponse(description = "Usuário sem permissão (Requer ROLE_ADMIN)", responseCode = "403")
+            }
+    )
+    @GetMapping(value = "/cpf/{cpf}", produces = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE})
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<UsuarioResponseDTO> findByCpf(@PathVariable String cpf){
         return ResponseEntity.ok(UsuarioMapper.toDto(usuarioService.findByCpf(cpf)));
     }
+
 	
 	@PutMapping(value = "/{id}", produces = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE},
 			consumes = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE})
