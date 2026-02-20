@@ -38,6 +38,14 @@ public class AutomovelService {
         );
     }
 
+    @Transactional
+    public void deleteByPlaca(String placa){
+        Long deletado = repository.deleteByPlaca(placa);
+        if(deletado == 0){
+            throw new EntityNotFoundException("Placa não encontrada.");
+        }
+    }
+
     public Page<Automovel> buscarTodos(Pageable pageable) {
         return repository.findAll(pageable);
     }

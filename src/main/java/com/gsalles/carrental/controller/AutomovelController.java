@@ -179,4 +179,32 @@ public class AutomovelController {
         list.forEach(dto -> dto.add(linkTo(methodOn(AutomovelController.class).findByPlaca(dto.getPlaca())).withRel("Self")));
         return ResponseEntity.ok(list);
     }
+
+    @Operation(
+            summary = "Deletar automóvel por placa",
+            description = "Operação deletar automóvel por placa",
+            tags = { "Automoveis" },
+            responses = {
+                    @ApiResponse(
+                            description = "Success",
+                            responseCode = "204"
+                    ),
+                    @ApiResponse(
+                            description = "Automovel não encontrado.",
+                            responseCode = "404",
+                            content = {
+                                    @Content(mediaType = "application/json", schema = @Schema(implementation = EntityNotFoundException.class)),
+                                    @Content(mediaType = "application/xml", schema = @Schema(implementation = EntityNotFoundException.class))
+                            }
+                    ),
+                    @ApiResponse(description = "Usuário não está autenticado.", responseCode = "401"),
+                    @ApiResponse(description = "Usuário não possui permissão.", responseCode = "403")
+            }
+    )
+    @DeleteMapping(value = "/placa/{placa}")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<Void> deleteByPlaca(@PathVariable String placa){
+        automovelService.deleteByPlaca(placa);
+        return ResponseEntity.noContent().build();
+    }
 }

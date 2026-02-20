@@ -12,4 +12,5 @@ import java.util.Optional;
 public interface AutomovelRepository extends JpaRepository<Automovel, Long> {
     Optional<Automovel> findByPlaca(String placa);
     Page<Automovel> findAll(Pageable pageable);
+    Long deleteByPlaca(String placa);
 }
