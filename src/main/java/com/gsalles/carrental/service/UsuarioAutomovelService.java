@@ -34,7 +34,7 @@ public class UsuarioAutomovelService {
         return repository.countByUsuarioUsernameAndDataFimIsNotNull(username);
     }
 
-    @Transactional
+    @Transactional(readOnly = true)
     public Page<UsuarioAutomovel> buscarTodosAlugueisPorUsername(String username, Pageable pageable){
         uService.buscarPorUsername(username);
         return repository.findAllByUsuarioUsername(username, pageable);

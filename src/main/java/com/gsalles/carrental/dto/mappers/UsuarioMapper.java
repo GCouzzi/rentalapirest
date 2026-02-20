@@ -36,4 +36,7 @@ public class UsuarioMapper {
 	public static Page<UsuarioResponseDTO> toListDto(Page<Usuario> list){
 		return list.map(UsuarioMapper::toDto);
 	}
+    public static List<UsuarioResponseDTO> toListDto(List<Usuario> list){
+        return list.stream().map(UsuarioMapper::toDto).collect(Collectors.toList());
+    }
 }

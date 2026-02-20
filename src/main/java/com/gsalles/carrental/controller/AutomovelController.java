@@ -14,6 +14,7 @@ import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -41,6 +42,7 @@ public class AutomovelController {
             summary = "Criar um automóvel",
             description = "Operação para criar um automóvel",
             tags = { "Automoveis" },
+            security = @SecurityRequirement(name = "security"),
             responses = {
                     @ApiResponse(
                             description = "Success",
@@ -82,6 +84,7 @@ public class AutomovelController {
             summary = "Buscar automóvel por placa",
             description = "Operação para buscar automóvel por placa",
             tags = { "Automoveis" },
+            security = @SecurityRequirement(name = "security"),
             responses = {
                     @ApiResponse(
                             description = "Success",
@@ -115,6 +118,7 @@ public class AutomovelController {
             summary = "Buscar automóvel por id",
             description = "Operação para buscar automóvel por id",
             tags = { "Automoveis" },
+            security = @SecurityRequirement(name = "security"),
             responses = {
                     @ApiResponse(
                             description = "Success",
@@ -147,6 +151,7 @@ public class AutomovelController {
             summary = "Listar todos automóveis",
             description = "Operação para listar todos os automóveis.",
             tags = { "Automoveis" },
+            security = @SecurityRequirement(name = "security"),
             parameters = {
                     @Parameter(name = "page", description = "Número da página a ser retornada (começa em 0)", example = "0"),
                     @Parameter(name = "size", description = "Quantidade de registros por página", example = "10"),
@@ -184,6 +189,7 @@ public class AutomovelController {
             summary = "Deletar automóvel por placa",
             description = "Operação deletar automóvel por placa",
             tags = { "Automoveis" },
+            security = @SecurityRequirement(name = "security"),
             responses = {
                     @ApiResponse(
                             description = "Success",
@@ -206,5 +212,33 @@ public class AutomovelController {
     public ResponseEntity<Void> deleteByPlaca(@PathVariable String placa){
         automovelService.deleteByPlaca(placa);
         return ResponseEntity.noContent().build();
+    }
+
+    @Operation(
+            summary = "Listar todos automóveis",
+            description = "Operação para listar todos os automóveis.",
+            tags = { "Automoveis" },
+            security = @SecurityRequirement(name = "security"),
+            responses = {
+                    @ApiResponse(
+                            description = "Success",
+                            responseCode = "200",
+                            content = {
+                                    @Content(mediaType = "application/json", schema = @Schema(type = "array",
+                                            implementation = AutomovelResponseDTO.class)),
+                                    @Content(mediaType = "application/xml", schema = @Schema(type = "array",
+                                            implementation = AutomovelResponseDTO.class))
+                            }
+                    ),
+                    @ApiResponse(description = "Usuário não está autenticado.", responseCode = "401"),
+                    @ApiResponse(description = "Usuário sem permissão.", responseCode = "403")
+            }
+    )
+    @GetMapping(value = "/all", produces = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE})
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<List<AutomovelResponseDTO>> findAllCustom(){
+        List<AutomovelResponseDTO> list = AutomovelMapper.toListDto(automovelService.buscarTodosCustom());
+        list.forEach(dto -> dto.add(linkTo(methodOn(AutomovelController.class).findByPlaca(dto.getPlaca())).withRel("Self")));
+        return ResponseEntity.ok(list);
     }
 }

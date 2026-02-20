@@ -26,7 +26,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.*;
 
@@ -259,4 +261,60 @@ public class UsuarioController {
 		list.forEach(dto -> dto.add(linkTo(methodOn(UsuarioController.class).findById(dto.getId())).withRel("Self")));
 		return ResponseEntity.ok(list);
 	}
+
+    @GetMapping(value = "/all", produces = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE})
+    @PreAuthorize("hasRole('ADMIN')")
+    @Operation(
+            summary = "Encontrar todos usuários",
+            description = "Operação para encontrar todos usuários. Requer autenticação com bearer token e permissão de admin.",
+            tags = {"Usuarios"},
+            security = @SecurityRequirement(name = "security"),
+            responses = {
+                    @ApiResponse(
+                            description = "Success",
+                            responseCode = "200",
+                            content = {
+                                    @Content(mediaType = "application/json", schema = @Schema(type = "array",
+                                            implementation = UsuarioResponseDTO.class)),
+                                    @Content(mediaType = "application/xml", schema = @Schema(type = "array",
+                                            implementation = UsuarioResponseDTO.class))
+                            }
+                    ),
+                    @ApiResponse(description = "Usuário não está autenticado.", responseCode = "401"),
+                    @ApiResponse(description = "Usuário sem permissão de Admin", responseCode = "403")
+            }
+    )
+    public ResponseEntity<List<UsuarioResponseDTO>> findAllCustom(){
+        List<UsuarioResponseDTO> list = UsuarioMapper.toListDto(usuarioService.buscarTodosCustom());
+        list.forEach(dto -> dto.add(linkTo(methodOn(UsuarioController.class).findById(dto.getId())).withRel("Self")));
+        return ResponseEntity.ok(list);
+    }
+
+    @Operation(
+            summary = "Obter dados do usuário logado",
+            description = "Retorna os dados do perfil do usuário autenticado através do Token JWT.",
+            tags = { "Usuarios" },
+            security = @SecurityRequirement(name = "security"),
+            responses = {
+                    @ApiResponse(
+                            description = "Sucesso ao retornar o perfil.",
+                            responseCode = "200",
+                            content = @Content(mediaType = "application/json", schema = @Schema(implementation = UsuarioResponseDTO.class))
+                    ),
+                    @ApiResponse(
+                            description = "Usuário não autenticado.",
+                            responseCode = "401"
+                    ),
+                    @ApiResponse(
+                            description = "Perfil de usuário não encontrado.",
+                            responseCode = "404"
+                    )
+            }
+    )
+    @GetMapping(value = "/me", produces = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE})
+    @PreAuthorize("hasAnyRole('ADMIN', 'CLIENTE')")
+    public ResponseEntity<UsuarioResponseDTO> getMe(@AuthenticationPrincipal UserDetails userDetails) {
+        UsuarioResponseDTO dto = UsuarioMapper.toDto(usuarioService.buscarPorUsername(userDetails.getUsername()));
+        return ResponseEntity.ok(dto);
+    }
 }

@@ -4,11 +4,11 @@ import com.gsalles.carrental.entity.Automovel;
 import com.gsalles.carrental.exception.AutomovelUniqueViolationException;
 import com.gsalles.carrental.exception.EntityNotFoundException;
 import com.gsalles.carrental.repository.AutomovelRepository;
-import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -26,12 +26,14 @@ public class AutomovelService {
         return repository.save(automovel);
     }
 
+    @Transactional(readOnly = true)
     public Automovel buscarPorPlaca(String placa) {
         return repository.findByPlaca(placa).orElseThrow(
                 () -> new EntityNotFoundException("Placa não encontrada.")
         );
     }
 
+    @Transactional(readOnly = true)
     public Automovel buscarPorId(Long id){
         return repository.findById(id).orElseThrow(
                 () -> new EntityNotFoundException("Id não encontrado.")
@@ -46,7 +48,13 @@ public class AutomovelService {
         }
     }
 
+    @Transactional(readOnly = true)
     public Page<Automovel> buscarTodos(Pageable pageable) {
         return repository.findAll(pageable);
+    }
+
+    @Transactional(readOnly = true)
+    public List<Automovel> buscarTodosCustom(){
+        return repository.findAll();
     }
 }

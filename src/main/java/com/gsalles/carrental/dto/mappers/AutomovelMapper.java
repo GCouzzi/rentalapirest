@@ -25,4 +25,8 @@ public class AutomovelMapper {
     public static Page<AutomovelResponseDTO> toListDto(Page<Automovel> list){
         return list.map(AutomovelMapper::toDto);
     }
+
+    public static List<AutomovelResponseDTO> toListDto(List<Automovel> list){
+        return list.stream().map(AutomovelMapper::toDto).collect(Collectors.toList());
+    }
 }

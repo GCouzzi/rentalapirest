@@ -91,4 +91,9 @@ public class UsuarioService {
     public Usuario.Role buscarRolePorUsername(String username) {
 		return repository.findRoleByUsername(username);
     }
+
+    @Transactional(readOnly = true)
+    public List<Usuario> buscarTodosCustom(){
+        return repository.findAll();
+    }
 }
