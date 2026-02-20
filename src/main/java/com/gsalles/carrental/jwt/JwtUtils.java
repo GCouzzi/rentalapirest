@@ -46,7 +46,7 @@ public class JwtUtils {
                 .subject(username)
                 .issuedAt(issuedAt)
                 .expiration(limit)
-                .claim("Role", role)
+                .claim("role", role)
                 .signWith(generateKey())
                 .compact();
         return new JwtToken(token);

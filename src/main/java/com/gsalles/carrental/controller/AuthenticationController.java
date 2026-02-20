@@ -1,5 +1,6 @@
 package com.gsalles.carrental.controller;
 
+import com.gsalles.carrental.dto.LoginDTO;
 import com.gsalles.carrental.dto.UsuarioDTO;
 import com.gsalles.carrental.dto.rdto.UsuarioResponseDTO;
 import com.gsalles.carrental.entity.Usuario;
@@ -59,17 +60,17 @@ public class AuthenticationController {
                     )
             }
     )
-    public ResponseEntity<?> authentication(@RequestBody @Valid UsuarioDTO usuarioDto, HttpServletRequest request){
+    public ResponseEntity<?> authentication(@RequestBody @Valid LoginDTO loginDto, HttpServletRequest request){
         try {
             UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(
-                    usuarioDto.getUsername(), usuarioDto.getPassword());
+                    loginDto.username(), loginDto.password());
             authenticationManager.authenticate(authenticationToken);
-            Usuario.Role role = usuarioService.buscarRolePorUsername(usuarioDto.getUsername());
-            JwtToken token = JwtUtils.createToken(usuarioDto.getUsername(), role.name().substring("ROLE_".length()));
+            Usuario.Role role = usuarioService.buscarRolePorUsername(loginDto.username());
+            JwtToken token = JwtUtils.createToken(loginDto.username(), role.name().substring("ROLE_".length()));
             return ResponseEntity.ok(token);
         } catch(AuthenticationException ex){
             log.error(ex.getMessage());
-            log.warn("Bad credentials from username {}", usuarioDto.getUsername());
+            log.warn("Bad credentials from username {}", loginDto.username());
         }
         return ResponseEntity.badRequest().body(new ErrorMessage(request, HttpStatus.BAD_REQUEST, "Credenciais inválidas."));
     }
