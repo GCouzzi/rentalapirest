@@ -14,9 +14,16 @@ import java.util.Optional;
 public interface UsuarioRepository extends JpaRepository<Usuario, Long> {
 
     Optional<Usuario> findByUsername(String username);
+    Optional<Usuario> findByCpf(String cpf);
+    Optional<Usuario> findByEmail(String email);
 
     @Query("select u.role from Usuario u where u.username like :username")
     Usuario.Role findRoleByUsername(String username);
 
     Page<Usuario> findAll(Pageable pageable);
+
+    boolean existsByUsername(String username);
+    boolean existsByCpf(String cpf);
+    boolean existsByEmail(String email);
+    boolean existsByTelefone(String telefone);
 }

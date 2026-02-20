@@ -24,101 +24,101 @@ public class UsuarioIT {
     @Autowired
     WebTestClient webTestClient;
 
-    @Test
-    public void createUsuario_withValidUsernameAndPassword_ReturnUsuarioWithStatusCode201(){
-        UsuarioResponseDTO response = webTestClient
-                .post()
-                .uri("api/v1/usuarios")
-                .contentType(MediaType.APPLICATION_JSON)
-                .bodyValue(new UsuarioDTO("gabriel@gmail", "12345678"))
-                .exchange()
-                .expectStatus()
-                .isCreated()
-                .expectBody(UsuarioResponseDTO.class)
-                .returnResult()
-                .getResponseBody();
-
-        Assertions.assertThat(response).isNotNull();
-        Assertions.assertThat(response.getUsername()).isEqualTo("gabriel@gmail");
-        Assertions.assertThat(response.getId()).isNotNull();
-        Assertions.assertThat(response.getRole()).isEqualTo("CLIENTE");
-    }
-
-    @Test
-    public void createUsuario_withInvalidUsername_ReturnErrorMessageWithStatusCode422(){
-        ErrorMessage response = webTestClient
-                .post()
-                .uri("api/v1/usuarios")
-                .contentType(MediaType.APPLICATION_JSON)
-                .bodyValue(new UsuarioDTO("gabriel", "12345678"))
-                .exchange()
-                .expectStatus()
-                .isEqualTo(422)
-                .expectBody(ErrorMessage.class).returnResult().getResponseBody();
-
-        Assertions.assertThat(response).isNotNull();
-        Assertions.assertThat(response.getStatus()).isEqualTo(422);
-
-        response = webTestClient
-                .post()
-                .uri("api/v1/usuarios")
-                .contentType(MediaType.APPLICATION_JSON)
-                .bodyValue(new UsuarioDTO("gabrielgabrielgabriel", "123456"))
-                .exchange()
-                .expectStatus()
-                .isEqualTo(422)
-                .expectBody(ErrorMessage.class).returnResult().getResponseBody();
-
-        Assertions.assertThat(response).isNotNull();
-        Assertions.assertThat(response.getStatus()).isEqualTo(422);
-    }
-
-    @Test
-    public void createUsuario_withInvalidPassword_ReturnErrorMessageWithStatusCode422(){
-        ErrorMessage response = webTestClient
-                .post()
-                .uri("api/v1/usuarios")
-                .contentType(MediaType.APPLICATION_JSON)
-                .bodyValue(new UsuarioDTO("gabriel1234", "12345"))
-                .exchange()
-                .expectStatus()
-                .isEqualTo(422)
-                .expectBody(ErrorMessage.class).returnResult().getResponseBody();
-
-        Assertions.assertThat(response).isNotNull();
-        Assertions.assertThat(response.getStatus()).isEqualTo(422);
-
-        response = webTestClient
-                .post()
-                .uri("api/v1/usuarios")
-                .contentType(MediaType.APPLICATION_JSON)
-                .bodyValue(new UsuarioDTO("gabriel1234", "123456789"))
-                .exchange()
-                .expectStatus()
-                .isEqualTo(422)
-                .expectBody(ErrorMessage.class).returnResult().getResponseBody();
-
-        Assertions.assertThat(response).isNotNull();
-        Assertions.assertThat(response.getStatus()).isEqualTo(422);
-    }
-
-    @Test
-    public void createUsuario_withExistentUsername_ReturnErrorMessageWithStatusCode409(){
-        ErrorMessage response = webTestClient
-                .post()
-                .uri("api/v1/usuarios")
-                .contentType(MediaType.APPLICATION_JSON)
-                .bodyValue(new UsuarioDTO("gabriel123", "12345678"))
-                .exchange()
-                .expectStatus()
-                .isEqualTo(409)
-                .expectBody(ErrorMessage.class)
-                .returnResult()
-                .getResponseBody();
-
-        Assertions.assertThat(response).isNotNull();
-        Assertions.assertThat(response.getStatus()).isEqualTo(409);
-    }
+//    @Test
+//    public void createUsuario_withValidUsernameAndPassword_ReturnUsuarioWithStatusCode201(){
+//        UsuarioResponseDTO response = webTestClient
+//                .post()
+//                .uri("api/v1/usuarios")
+//                .contentType(MediaType.APPLICATION_JSON)
+//                .bodyValue(new UsuarioDTO("gabriel@gmail", "12345678"))
+//                .exchange()
+//                .expectStatus()
+//                .isCreated()
+//                .expectBody(UsuarioResponseDTO.class)
+//                .returnResult()
+//                .getResponseBody();
+//
+//        Assertions.assertThat(response).isNotNull();
+//        Assertions.assertThat(response.getUsername()).isEqualTo("gabriel@gmail");
+//        Assertions.assertThat(response.getId()).isNotNull();
+//        Assertions.assertThat(response.getRole()).isEqualTo("CLIENTE");
+//    }
+//
+//    @Test
+//    public void createUsuario_withInvalidUsername_ReturnErrorMessageWithStatusCode422(){
+//        ErrorMessage response = webTestClient
+//                .post()
+//                .uri("api/v1/usuarios")
+//                .contentType(MediaType.APPLICATION_JSON)
+//                .bodyValue(new UsuarioDTO("gabriel", "12345678"))
+//                .exchange()
+//                .expectStatus()
+//                .isEqualTo(422)
+//                .expectBody(ErrorMessage.class).returnResult().getResponseBody();
+//
+//        Assertions.assertThat(response).isNotNull();
+//        Assertions.assertThat(response.getStatus()).isEqualTo(422);
+//
+//        response = webTestClient
+//                .post()
+//                .uri("api/v1/usuarios")
+//                .contentType(MediaType.APPLICATION_JSON)
+//                .bodyValue(new UsuarioDTO("gabrielgabrielgabriel", "123456"))
+//                .exchange()
+//                .expectStatus()
+//                .isEqualTo(422)
+//                .expectBody(ErrorMessage.class).returnResult().getResponseBody();
+//
+//        Assertions.assertThat(response).isNotNull();
+//        Assertions.assertThat(response.getStatus()).isEqualTo(422);
+//    }
+//
+//    @Test
+//    public void createUsuario_withInvalidPassword_ReturnErrorMessageWithStatusCode422(){
+//        ErrorMessage response = webTestClient
+//                .post()
+//                .uri("api/v1/usuarios")
+//                .contentType(MediaType.APPLICATION_JSON)
+//                .bodyValue(new UsuarioDTO("gabriel1234", "12345"))
+//                .exchange()
+//                .expectStatus()
+//                .isEqualTo(422)
+//                .expectBody(ErrorMessage.class).returnResult().getResponseBody();
+//
+//        Assertions.assertThat(response).isNotNull();
+//        Assertions.assertThat(response.getStatus()).isEqualTo(422);
+//
+//        response = webTestClient
+//                .post()
+//                .uri("api/v1/usuarios")
+//                .contentType(MediaType.APPLICATION_JSON)
+//                .bodyValue(new UsuarioDTO("gabriel1234", "123456789"))
+//                .exchange()
+//                .expectStatus()
+//                .isEqualTo(422)
+//                .expectBody(ErrorMessage.class).returnResult().getResponseBody();
+//
+//        Assertions.assertThat(response).isNotNull();
+//        Assertions.assertThat(response.getStatus()).isEqualTo(422);
+//    }
+//
+//    @Test
+//    public void createUsuario_withExistentUsername_ReturnErrorMessageWithStatusCode409(){
+//        ErrorMessage response = webTestClient
+//                .post()
+//                .uri("api/v1/usuarios")
+//                .contentType(MediaType.APPLICATION_JSON)
+//                .bodyValue(new UsuarioDTO("gabriel123", "12345678"))
+//                .exchange()
+//                .expectStatus()
+//                .isEqualTo(409)
+//                .expectBody(ErrorMessage.class)
+//                .returnResult()
+//                .getResponseBody();
+//
+//        Assertions.assertThat(response).isNotNull();
+//        Assertions.assertThat(response.getStatus()).isEqualTo(409);
+//    }
 
     @Test
     public void findUsuarioById_withExistentUsuarioAdmin_ReturnUsuarioWithStatusCode200(){

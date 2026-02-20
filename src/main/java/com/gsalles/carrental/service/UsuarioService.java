@@ -1,9 +1,7 @@
 package com.gsalles.carrental.service;
 
 import com.gsalles.carrental.entity.Usuario;
-import com.gsalles.carrental.exception.EntityNotFoundException;
-import com.gsalles.carrental.exception.PasswordInvalidException;
-import com.gsalles.carrental.exception.UsernameUniqueViolationException;
+import com.gsalles.carrental.exception.*;
 import com.gsalles.carrental.repository.UsuarioRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.dao.DataIntegrityViolationException;
@@ -23,12 +21,24 @@ public class UsuarioService {
 	private final PasswordEncoder encoder;
 	@Transactional
 	public Usuario salvar(Usuario usuario) {
-		try {
-			usuario.setPassword(encoder.encode(usuario.getPassword()));
-			return repository.save(usuario);
-		} catch(DataIntegrityViolationException ex) {
-			throw new UsernameUniqueViolationException("Esse username já existe.");
-		}
+        if (repository.existsByUsername(usuario.getUsername())) {
+            throw new UsernameUniqueViolationException("Username já cadastrado.");
+        }
+
+        if (repository.existsByCpf(usuario.getCpf())) {
+            throw new CpfUniqueViolationException("CPF já cadastrado.");
+        }
+
+        if (repository.existsByEmail(usuario.getEmail())) {
+            throw new EmailUniqueViolationException("Email já cadastrado.");
+        }
+
+        if (repository.existsByTelefone(usuario.getTelefone())) {
+            throw new TelefoneUniqueViolationException("Telefone já cadastrado.");
+        }
+
+        usuario.setPassword(encoder.encode(usuario.getPassword()));
+        return repository.save(usuario);
 	}
 	
 	@Transactional(readOnly=true)
@@ -37,6 +47,20 @@ public class UsuarioService {
 				() -> new EntityNotFoundException("Id não encontrado.")
 				);
 	}
+
+    @Transactional(readOnly = true)
+    public Usuario findByEmail(String email){
+        return repository.findByEmail(email).orElseThrow(
+                () -> new EntityNotFoundException("Email não encontrado.")
+        );
+    }
+
+    @Transactional(readOnly = true)
+    public Usuario findByCpf(String cpf){
+        return repository.findByCpf(cpf).orElseThrow(
+                () -> new EntityNotFoundException("CPF não encontrado.")
+        );
+    }
 
 	@Transactional
 	public void alterarSenha(Long id, String senhaAtual, String novaSenha, String confirmarSenha) {

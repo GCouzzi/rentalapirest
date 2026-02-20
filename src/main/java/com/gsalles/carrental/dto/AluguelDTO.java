@@ -14,11 +14,11 @@ import lombok.Setter;
 @AllArgsConstructor
 public class AluguelDTO {
 
-    @NotBlank
-    @Size(min = 8, max = 20)
+    @NotBlank(message = "Username é obrigatório")
+    @Size(min = 8, max = 20, message = "Username deve possuir entre 8 e 20 caracteres")
     private String usuarioUsername;
-    @NotBlank
-    @Pattern(regexp = "[A-Z]{3}-[0-9]{4}")
-    @Size(min = 8, max = 8)
+    @NotBlank(message = "Placa é obrigatório")
+    @Pattern(regexp = "[A-Z]{3}-[0-9]{4}", message = "Placa deve atender ao padrão AAA-0000")
+    @Size(min = 8, max = 8, message = "Placa deve possuir 8 caracteres")
     private String automovelPlaca;
 }

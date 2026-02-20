@@ -35,6 +35,18 @@ public class Usuario {
 	@Column(name = "role", nullable = false, length = 25)
 	private Role role = Role.ROLE_CLIENTE;
 
+    @Column(name = "nome_completo", nullable = false, length = 100)
+    private String nomeCompleto;
+
+    @Column(name = "cpf", nullable = false, length = 11, unique = true)
+    private String cpf;
+
+    @Column(name = "telefone", nullable = false, length = 15, unique = true)
+    private String telefone;
+
+    @Column(name = "email", nullable = false, length = 100, unique = true)
+    private String email;
+
 	@CreatedDate
 	@Column(name = "data_criacao")
 	private LocalDateTime dataCriacao;

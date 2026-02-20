@@ -12,4 +12,8 @@ public class UsuarioResponseDTO extends RepresentationModel<UsuarioResponseDTO> 
 	private Long id;
 	private String username;
 	private String role;
+    private String nomeCompleto;
+    private String cpf;
+    private String telefone;
+    private String email;
 }

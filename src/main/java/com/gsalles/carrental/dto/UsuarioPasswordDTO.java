@@ -10,15 +10,15 @@ import lombok.Setter;
 @Getter @Setter @NoArgsConstructor @AllArgsConstructor
 public class UsuarioPasswordDTO {
 	
-	@NotBlank
-	@Size(min = 6, max = 8)
+	@NotBlank(message = "Senha atual é obrigatório")
+	@Size(min = 6, max = 8, message = "Senha deve possuir entre 6 a 8 caracteres")
 	private String senhaAtual;
 	
-	@NotBlank
-	@Size(min = 6, max = 8)
+	@NotBlank(message = "Nova senha é obrigatório")
+	@Size(min = 6, max = 8, message = "Senha deve possuir entre 6 a 8 caracteres")
 	private String novaSenha;
 	
-	@NotBlank
-	@Size(min = 6, max = 8)
+	@NotBlank(message = "Confirmar senha é obrigatório")
+	@Size(min = 6, max = 8, message = "Senha deve possuir entre 6 a 8 caracteres")
 	private String confirmarSenha;
 }

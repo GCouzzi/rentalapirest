@@ -17,16 +17,17 @@ import java.math.BigDecimal;
 @Setter
 @NoArgsConstructor @AllArgsConstructor
 public class AutomovelDTO {
-    @NotBlank
+    @NotBlank(message = "Marca é obrigatório")
     private String marca;
-    @NotBlank
+    @NotBlank(message = "Modelo é obrigatório")
     private String modelo;
-    @NotBlank
+    @NotBlank(message = "Cor é obrigatório")
     private String cor;
-    @NotBlank
-    @Pattern(regexp = "[A-Z]{3}-[0-9]{4}")
-    @Size(min = 8, max = 8)
+    @NotBlank(message = "Placa é obrigatório")
+    @Pattern(regexp = "[A-Z]{3}-[0-9]{4}", message = "Placa deve atender ao padrão AAA-0000")
+    @Size(min = 8, max = 8, message = "Placa deve ter 8 caracteres")
     private String placa;
-    @Positive
+    @NotBlank(message = "Valor por minuto é obrigatório")
+    @Positive(message = "Valor por minuto deve ser positivo")
     private BigDecimal valorPorMinuto;
 }

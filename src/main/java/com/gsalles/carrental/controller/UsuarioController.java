@@ -14,6 +14,7 @@ import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -25,6 +26,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.*;
 
@@ -109,9 +111,52 @@ public class UsuarioController {
 	)
 	public ResponseEntity<UsuarioResponseDTO> findById(@PathVariable Long id){
 		UsuarioResponseDTO r = UsuarioMapper.toDto(usuarioService.buscarPorId(id));
-		r.add(linkTo(methodOn(UsuarioController.class).findAll(0, 10, "id", "asc")).withRel("Lista de usuários"));
-		return ResponseEntity.ok(r);
+        if (SecurityContextHolder.getContext().getAuthentication()
+                .getAuthorities().stream()
+                .anyMatch(a -> a.getAuthority().equals("ROLE_ADMIN"))) {
+
+            r.add(linkTo(methodOn(UsuarioController.class)
+                    .findAll(0, 10, "id", "asc"))
+                    .withRel("Lista de usuários"));
+        }
+        return ResponseEntity.ok(r);
 	}
+
+    @Operation(
+            summary = "Buscar usuário por email ou CPF",
+            description = """
+                Retorna um usuário com base no email OU CPF informado.
+                
+                Regras:
+                - Apenas um dos parâmetros deve ser informado.
+                - Se ambos forem enviados → 400 Bad Request.
+                - Se nenhum for enviado → 400 Bad Request.
+                - Se não for encontrado → 404 Not Found.
+                """
+    )
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Usuário encontrado"),
+            @ApiResponse(responseCode = "400", description = "Parâmetros inválidos"),
+            @ApiResponse(responseCode = "403", description = "Acesso negado"),
+            @ApiResponse(responseCode = "401", description = "Usuário não está autenticado."),
+            @ApiResponse(responseCode = "404", description = "Usuário não encontrado")
+    })
+    @GetMapping
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<UsuarioResponseDTO> findByEmailAndOrCpf(@RequestParam(required = false) String email,
+                                                                  @RequestParam(required = false) String cpf){
+        if(email != null && cpf != null){
+            throw new IllegalArgumentException("Apenas um campo deve ser utilizado na busca.");
+        }
+        if (email == null && cpf == null) {
+            throw new IllegalArgumentException("Informe email ou cpf.");
+        }
+        if(email != null){
+            return ResponseEntity.ok(UsuarioMapper.toDto(usuarioService.findByEmail(email)));
+        }
+
+        return ResponseEntity.ok(UsuarioMapper.toDto(usuarioService.findByCpf(cpf)));
+    }
 	
 	@PutMapping(value = "/{id}", produces = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE},
 			consumes = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE})
