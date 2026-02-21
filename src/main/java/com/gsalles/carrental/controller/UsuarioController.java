@@ -182,6 +182,34 @@ public class UsuarioController {
         return ResponseEntity.ok(UsuarioMapper.toDto(usuarioService.findByCpf(cpf)));
     }
 
+    @Operation(
+            summary = "Encontrar usuário por username",
+            description = "Operação para encontrar usuário por Username. Requer privilégios de ADMIN. Requer autenticação com bearer token.",
+            security = @SecurityRequirement(name = "security"),
+            tags = {"Usuarios"},
+            responses = {
+                    @ApiResponse(
+                            description = "Success",
+                            responseCode = "200",
+                            content = {
+                                    @Content(mediaType = "application/json", schema = @Schema(implementation = UsuarioResponseDTO.class)),
+                                    @Content(mediaType = "application/xml", schema = @Schema(implementation = UsuarioResponseDTO.class))
+                            }
+                    ),
+                    @ApiResponse(
+                            description = "Usuário não encontrado",
+                            responseCode = "404",
+                            content = @Content(schema = @Schema(implementation = EntityNotFoundException.class))
+                    ),
+                    @ApiResponse(description = "Usuário não está autenticado.", responseCode = "401"),
+                    @ApiResponse(description = "Usuário sem permissão.", responseCode = "403")
+            }
+    )
+    @GetMapping(value = "/username/{username}", produces = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE})
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<UsuarioResponseDTO> findByUsername(@PathVariable String username){
+        return ResponseEntity.ok(UsuarioMapper.toDto(usuarioService.buscarPorUsername(username)));
+    }
 	
 	@PutMapping(value = "/{id}", produces = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE},
 			consumes = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE})
@@ -316,5 +344,37 @@ public class UsuarioController {
     public ResponseEntity<UsuarioResponseDTO> getMe(@AuthenticationPrincipal UserDetails userDetails) {
         UsuarioResponseDTO dto = UsuarioMapper.toDto(usuarioService.buscarPorUsername(userDetails.getUsername()));
         return ResponseEntity.ok(dto);
+    }
+
+    @Operation(
+            summary = "Deletar usuário cliente.",
+            description = "Deleta usuário com role cliente.",
+            tags = { "Usuarios" },
+            security = @SecurityRequirement(name = "security"),
+            responses = {
+                    @ApiResponse(
+                            description = "Sucesso ao deletar usuário cliente.",
+                            responseCode = "204",
+                            content = @Content(mediaType = "application/json", schema = @Schema(implementation = UsuarioResponseDTO.class))
+                    ),
+                    @ApiResponse(
+                            description = "Usuário não autenticado.",
+                            responseCode = "401"
+                    ),
+                    @ApiResponse(
+                            description = "Usuário sem permissão.",
+                            responseCode = "403"
+                    ),
+                    @ApiResponse(
+                            description = "Usuário não encontrado.",
+                            responseCode = "404"
+                    )
+            }
+    )
+    @DeleteMapping(value = "/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<Void> deleteById(@PathVariable Long id){
+        usuarioService.deleteById(id);
+        return ResponseEntity.noContent().build();
     }
 }

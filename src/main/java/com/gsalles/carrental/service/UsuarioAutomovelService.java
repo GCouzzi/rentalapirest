@@ -39,4 +39,9 @@ public class UsuarioAutomovelService {
         uService.buscarPorUsername(username);
         return repository.findAllByUsuarioUsername(username, pageable);
     }
+
+    @Transactional(readOnly = true)
+    public Page<UsuarioAutomovel> buscarTodos(Pageable pageable){
+        return repository.findAll(pageable);
+    }
 }

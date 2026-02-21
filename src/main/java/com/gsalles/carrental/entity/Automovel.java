@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.math.BigDecimal;
+import java.util.List;
 import java.util.Objects;
 
 @Getter @Setter @NoArgsConstructor @AllArgsConstructor
@@ -29,6 +30,8 @@ public class Automovel {
 	@Column(name = "valor_por_minuto", columnDefinition = "decimal(8,2)")
 	private BigDecimal valorPorMinuto;
 	@Column(name = "status", nullable = false)
+    @OneToMany(mappedBy = "automovel", cascade = CascadeType.REMOVE, orphanRemoval = true)
+    private List<UsuarioAutomovel> alugueis;
 	@Enumerated(EnumType.STRING)
 	private Status status = Status.LIVRE;
 	public enum Status{

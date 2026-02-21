@@ -96,4 +96,12 @@ public class UsuarioService {
     public List<Usuario> buscarTodosCustom(){
         return repository.findAll();
     }
+
+    public void deleteById(Long id) {
+        Usuario u = buscarPorId(id);
+        if(u.getRole().toString().contains("ADMIN")){
+            throw new DeleteViolationException("Usuário possui role ADMIN.");
+        }
+        repository.deleteById(id);
+    }
 }

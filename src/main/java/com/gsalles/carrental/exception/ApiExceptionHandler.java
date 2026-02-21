@@ -17,8 +17,12 @@ public class ApiExceptionHandler {
 	@ExceptionHandler(MethodArgumentNotValidException.class)
 	public ResponseEntity<ErrorMessage> methodArgumentNotValidException(MethodArgumentNotValidException ex, HttpServletRequest request){
 		log.error("Api error - ", ex);
+        String mensagem = ex.getBindingResult()
+                .getFieldErrors()
+                .get(0)
+                .getDefaultMessage();
 		return ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).contentType(MediaType.APPLICATION_JSON)
-				.body(new ErrorMessage(request, HttpStatus.UNPROCESSABLE_ENTITY, ex.getMessage()));
+				.body(new ErrorMessage(request, HttpStatus.UNPROCESSABLE_ENTITY, mensagem));
 	}
 
 	@ExceptionHandler(UsernameUniqueViolationException.class)
@@ -48,8 +52,8 @@ public class ApiExceptionHandler {
 				.body(new ErrorMessage(request, HttpStatus.NOT_FOUND, ex.getMessage()));
 	}
 	
-	@ExceptionHandler(PasswordInvalidException.class)
-	public ResponseEntity<ErrorMessage> passwordInvalidException(PasswordInvalidException ex, 
+	@ExceptionHandler({PasswordInvalidException.class})
+	public ResponseEntity<ErrorMessage> passwordInvalidException(PasswordInvalidException ex,
 			HttpServletRequest request){
 		log.error("Api error - ", ex);
 		return ResponseEntity.status(HttpStatus.BAD_REQUEST)
@@ -73,4 +77,13 @@ public class ApiExceptionHandler {
 				.contentType(MediaType.APPLICATION_JSON)
 				.body(new ErrorMessage(request, HttpStatus.FORBIDDEN, ex.getMessage()));
 	}
+
+    @ExceptionHandler(DeleteViolationException.class)
+    public ResponseEntity<ErrorMessage> deleteViolationException(DeleteViolationException ex, HttpServletRequest request) {
+        log.error("Api error - ", ex);
+        return ResponseEntity
+                .status(HttpStatus.BAD_REQUEST)
+                .contentType(MediaType.APPLICATION_JSON)
+                .body(new ErrorMessage(request, HttpStatus.BAD_REQUEST, ex.getMessage()));
+    }
 }

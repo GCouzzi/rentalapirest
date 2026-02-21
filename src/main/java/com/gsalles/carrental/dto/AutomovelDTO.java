@@ -27,7 +27,6 @@ public class AutomovelDTO {
     @Pattern(regexp = "[A-Z]{3}-[0-9]{4}", message = "Placa deve atender ao padrão AAA-0000")
     @Size(min = 8, max = 8, message = "Placa deve ter 8 caracteres")
     private String placa;
-    @NotBlank(message = "Valor por minuto é obrigatório")
     @Positive(message = "Valor por minuto deve ser positivo")
     private BigDecimal valorPorMinuto;
 }

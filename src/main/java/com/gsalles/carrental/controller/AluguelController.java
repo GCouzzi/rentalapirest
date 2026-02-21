@@ -40,7 +40,7 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.*;
 @RequestMapping("api/v1/alugueis")
 @RequiredArgsConstructor
 public class AluguelController {
-    
+
     private final AluguelService aluguelService;
     private final UsuarioAutomovelService usuarioAutomovelService;
     private final AutomovelService automovelService;
@@ -91,7 +91,7 @@ public class AluguelController {
                     @ApiResponse(description = "Usuário sem permissão de Admin", responseCode = "403")
             }
     )
-    public ResponseEntity<AluguelResponseDTO> checkin(@RequestBody @Valid AluguelDTO dto){
+    public ResponseEntity<AluguelResponseDTO> checkin(@RequestBody @Valid AluguelDTO dto) {
         UsuarioAutomovel ua = AluguelMapper.toUsuarioAutomovel(dto);
         ua.setUsuario(usuarioService.buscarPorUsername(ua.getUsuario().getUsername()));
         ua.setAutomovel(automovelService.buscarPorPlaca(ua.getAutomovel().getPlaca()));
@@ -132,7 +132,7 @@ public class AluguelController {
                     @ApiResponse(description = "Usuário sem permissão de Admin", responseCode = "403")
             }
     )
-    public ResponseEntity<AluguelResponseDTO> getByRecibo(@PathVariable String recibo){
+    public ResponseEntity<AluguelResponseDTO> getByRecibo(@PathVariable String recibo) {
         UsuarioAutomovel ua = usuarioAutomovelService.buscarPorRecibo(recibo);
         AluguelResponseDTO rDto = AluguelMapper.toDto(ua);
         rDto.add(linkTo(methodOn(AluguelController.class).getAllAlugueisByUsername(rDto.getUsuarioUsername(), 0,
@@ -176,7 +176,7 @@ public class AluguelController {
     )
     @GetMapping(value = "/checkout/{recibo}", produces = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE})
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<AluguelResponseDTO> checkout(@PathVariable String recibo){
+    public ResponseEntity<AluguelResponseDTO> checkout(@PathVariable String recibo) {
         UsuarioAutomovel ua = aluguelService.checkout(recibo);
         AluguelResponseDTO rDto = AluguelMapper.toDto(ua);
         rDto.add(linkTo(methodOn(AluguelController.class).getByRecibo(rDto.getAutomovelRecibo())).withSelfRel());
@@ -206,11 +206,11 @@ public class AluguelController {
     )
     @GetMapping(produces = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE})
     @PreAuthorize("hasAnyRole('CLIENTE', 'ADMIN')")
-    public ResponseEntity<Page<AluguelResponseDTO>> getAllAlugueis(@AuthenticationPrincipal JwtUserDetails userDetails,
+    public ResponseEntity<Page<AluguelResponseDTO>> getAllAlugueisUserAuthenticated(@AuthenticationPrincipal JwtUserDetails userDetails,
                                                                    @RequestParam(defaultValue = "0") int page,
                                                                    @RequestParam(defaultValue = "10") int size,
                                                                    @RequestParam(defaultValue = "id") String sortBy,
-                                                                   @RequestParam(defaultValue = "asc") String direction){
+                                                                   @RequestParam(defaultValue = "asc") String direction) {
         Sort sort = Sort.by(Sort.Direction.fromString(direction), sortBy);
         Pageable pageable = PageRequest.of(page, size, sort);
         Page<AluguelResponseDTO> list = AluguelMapper.toListDto(usuarioAutomovelService.buscarTodosAlugueisPorUsername(userDetails.getUsername(), pageable));
@@ -256,10 +256,48 @@ public class AluguelController {
                                                                              @RequestParam(defaultValue = "0") int page,
                                                                              @RequestParam(defaultValue = "10") int size,
                                                                              @RequestParam(defaultValue = "id") String sortBy,
-                                                                             @RequestParam(defaultValue = "asc") String direction){
+                                                                             @RequestParam(defaultValue = "asc") String direction) {
         Sort sort = Sort.by(Sort.Direction.fromString(direction), sortBy);
         Pageable pageable = PageRequest.of(page, size, sort);
         Page<AluguelResponseDTO> list = AluguelMapper.toListDto(usuarioAutomovelService.buscarTodosAlugueisPorUsername(username, pageable));
+        list.forEach(dto -> dto.add(linkTo(methodOn(AluguelController.class).getByRecibo(dto.getAutomovelRecibo())).withRel("Self")));
+        return ResponseEntity.ok(list);
+    }
+
+    @Operation(
+            summary = "Operação de listar todos os aluguéis.",
+            description = "Operação para listar aluguéis. Requer permissão de admin.",
+            tags = {"Aluguel"},
+            parameters = {
+                    @Parameter(name = "page", description = "Número da página a ser retornada (começa em 0)", example = "0"),
+                    @Parameter(name = "size", description = "Quantidade de registros por página", example = "10"),
+                    @Parameter(name = "sortBy", description = "Campo para ordenação", example = "id"),
+                    @Parameter(name = "direction", description = "Direção da ordenação: asc ou desc", example = "asc")
+            },
+            security = @SecurityRequirement(name = "security"),
+            responses = {
+                    @ApiResponse(
+                            description = "Operação de listagem realizada com sucesso",
+                            responseCode = "200",
+                            content = {
+                                    @Content(mediaType = "application/json", schema = @Schema(implementation = AluguelResponseDTO.class)),
+                                    @Content(mediaType = "application/xml", schema = @Schema(implementation = AluguelResponseDTO.class))
+                            }
+                    ),
+                    @ApiResponse(description = "Usuário não está autenticado.", responseCode = "401"),
+                    @ApiResponse(description = "Usuário sem permissão de Admin", responseCode = "403"),
+            }
+    )
+    @GetMapping(value = "/all", produces = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE})
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<Page<AluguelResponseDTO>> getAllAlugueisAdmin(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size,
+            @RequestParam(defaultValue = "id") String sortBy,
+            @RequestParam(defaultValue = "asc") String direction) {
+        Sort sort = Sort.by(Sort.Direction.fromString(direction), sortBy);
+        Pageable pageable = PageRequest.of(page, size, sort);
+        Page<AluguelResponseDTO> list = AluguelMapper.toListDto(usuarioAutomovelService.buscarTodos(pageable));
         list.forEach(dto -> dto.add(linkTo(methodOn(AluguelController.class).getByRecibo(dto.getAutomovelRecibo())).withRel("Self")));
         return ResponseEntity.ok(list);
     }

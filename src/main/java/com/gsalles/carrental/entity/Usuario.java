@@ -1,6 +1,7 @@
 package com.gsalles.carrental.entity;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Objects;
 
 import jakarta.persistence.*;
@@ -62,6 +63,9 @@ public class Usuario {
 	@LastModifiedBy
 	@Column(name = "modificado_por")
 	private String modificadoPor;
+
+    @OneToMany(mappedBy = "usuario", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<UsuarioAutomovel> alugueis;
 	
 	public enum Role {
 		ROLE_ADMIN, ROLE_CLIENTE
